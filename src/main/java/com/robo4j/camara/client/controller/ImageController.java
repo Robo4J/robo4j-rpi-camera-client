@@ -20,6 +20,7 @@ package com.robo4j.camara.client.controller;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -75,8 +76,8 @@ public class ImageController extends RoboUnit<Boolean> {
 	protected void onInitialization(Configuration configuration) throws ConfigurationException {
 		SimpleLoggingUtil.print(getClass(), "camera client init");
 		Map<String, String> parameters = new HashMap<>();
-		parameters.put(KEY_WIDTH, configuration.getString(KEY_WIDTH, "640"));
-		parameters.put(KEY_HEIGHT, configuration.getString(KEY_HEIGHT, "480"));
+		parameters.put(KEY_WIDTH, configuration.getString(KEY_WIDTH, "240"));
+		parameters.put(KEY_HEIGHT, configuration.getString(KEY_HEIGHT, "180"));
 
 		StringBuilder sb = new StringBuilder(RASPI_CAMERA).append(SPACE)
 				.append(parameters.entrySet().stream().map(e -> {
@@ -153,7 +154,7 @@ public class ImageController extends RoboUnit<Boolean> {
 				baos.write(imageCh);
 			}
 			in.close();
-			return new String(baos.toByteArray());
+			return Base64.getEncoder().encodeToString(baos.toByteArray());
 		} catch (IOException e) {
 			throw new CameraClientException("IMAGE GENERATION", e);
 		}
