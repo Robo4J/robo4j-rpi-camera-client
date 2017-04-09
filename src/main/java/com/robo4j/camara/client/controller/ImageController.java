@@ -45,6 +45,7 @@ import sun.net.util.IPAddressUtil;
  * @author Miro Wengner (@miragemiko)
  */
 public class ImageController extends RoboUnit<Boolean> {
+	private static final String DEFAULT_ENCODING = "UTF-8";
 	private static final String KEY_WIDTH = "width";
 	private static final String KEY_HEIGHT = "height";
 	private static final String KEY_TIMEOUT = "timeout";
@@ -61,7 +62,7 @@ public class ImageController extends RoboUnit<Boolean> {
 	private static final Map<String, String> raspistillProperties = PropertyMapBuilder.Builder().put(KEY_WIDTH, "-w")
 			.put(KEY_HEIGHT, "-h").put(KEY_TIMEOUT, "-t").put(KEY_QUALITY, "-q").put(KEY_SHARPNESS, "-sh")
 			.put(KEY_BRIGHTNESS, "-br").put(KEY_CONTRAST, "-co").put(KEY_SATURATION, "-sa").create();
-	private static int CONTENT_END = -1;
+	private static final int CONTENT_END = -1;
 	private static final String DEFAULT_SETUP = "-n -e jpg -vf -hf -o -";
 	private static String cameraCommand;
 	private String targetOut;
@@ -76,8 +77,8 @@ public class ImageController extends RoboUnit<Boolean> {
 	protected void onInitialization(Configuration configuration) throws ConfigurationException {
 		SimpleLoggingUtil.print(getClass(), "camera client init");
 		Map<String, String> parameters = new HashMap<>();
-		parameters.put(KEY_WIDTH, configuration.getString(KEY_WIDTH, "240"));
-		parameters.put(KEY_HEIGHT, configuration.getString(KEY_HEIGHT, "180"));
+		parameters.put(KEY_WIDTH, configuration.getString(KEY_WIDTH, "320")); // 64
+		parameters.put(KEY_HEIGHT, configuration.getString(KEY_HEIGHT, "240")); // 45
 
 		StringBuilder sb = new StringBuilder(RASPI_CAMERA).append(SPACE)
 				.append(parameters.entrySet().stream().map(e -> {
@@ -131,12 +132,9 @@ public class ImageController extends RoboUnit<Boolean> {
 	private void createImage() {
 		final CameraMessage cameraMessage = new CameraMessage("jpg", "default", executeCommand(cameraCommand));
 		final String message = codec.encode(cameraMessage);
-		SimpleLoggingUtil.print(getClass(), "createImage targetOut: " + targetOut);
-		SimpleLoggingUtil.print(getClass(), "createImage cameraMessage: " + cameraMessage.getType());
-		if(cameraMessage.getImage().length() != 0){
-			SimpleLoggingUtil.print(getClass(), "createImage messageLength: " + message.length());
-			SimpleLoggingUtil.print(getClass(), "createImage cameraMessage length: " + cameraMessage.getImage().length());
-			sendClientMessage(getContext(), RoboHttpUtils.createPostRequest(client, clientUri, message));
+		if (cameraMessage.getImage().length() != 0) {
+			final String postMessage = RoboHttpUtils.createPostRequest(client, clientUri, message);
+			sendClientMessage(getContext(), postMessage);
 		}
 	}
 
@@ -148,13 +146,16 @@ public class ImageController extends RoboUnit<Boolean> {
 		final Runtime runtime = Runtime.getRuntime();
 		try (final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
 			Process process = runtime.exec(command);
-			InputStream in = process.getInputStream();
+			InputStream imageArray = process.getInputStream();
+
 			int imageCh;
-			while ((imageCh = in.read()) != CONTENT_END) {
+			while ((imageCh = imageArray.read()) != CONTENT_END) {
 				baos.write(imageCh);
 			}
-			in.close();
-			return Base64.getEncoder().encodeToString(baos.toByteArray());
+			imageArray.close();
+			final byte[] tmpBytes = baos.toByteArray().clone();
+
+			return new String(Base64.getEncoder().encode(tmpBytes), DEFAULT_ENCODING);
 		} catch (IOException e) {
 			throw new CameraClientException("IMAGE GENERATION", e);
 		}
