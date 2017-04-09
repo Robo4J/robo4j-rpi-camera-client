@@ -33,6 +33,7 @@ import com.robo4j.core.util.SystemUtil;
  */
 public class CameraClientDeclarativeMain {
 
+	private static final int DEFAULT_INIT_VALUE = 0;
 	private static final int PERIOD_SECONDS = 4;
 
 	public static void main(String[] args) throws RoboBuilderException, IOException {
@@ -47,7 +48,7 @@ public class CameraClientDeclarativeMain {
 		System.out.println(SystemUtil.printStateReport(system));
 
 		RoboReference<Boolean> imageController = system.getReference("imageController");
-		system.getScheduler().schedule(imageController, true,0,  PERIOD_SECONDS, TimeUnit.SECONDS);
+		system.getScheduler().schedule(imageController, true,DEFAULT_INIT_VALUE,  PERIOD_SECONDS, TimeUnit.SECONDS);
 
 
 		System.out.println("Press enter to quit!");
