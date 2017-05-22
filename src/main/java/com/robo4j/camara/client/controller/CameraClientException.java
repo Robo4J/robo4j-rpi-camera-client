@@ -21,9 +21,9 @@ package com.robo4j.camara.client.controller;
  * @author Marcus Hirt (@hirt)
  * @author Miro Wengner (@miragemiko)
  */
-public class CameraClientException extends RuntimeException {
+class CameraClientException extends RuntimeException {
 
-    public CameraClientException(String message, Throwable cause) {
+    CameraClientException(String message, Throwable cause) {
         super(message, cause);
     }
 }

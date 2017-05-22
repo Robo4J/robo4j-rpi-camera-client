@@ -18,12 +18,10 @@
 package com.robo4j.camara.client;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 import com.robo4j.core.RoboBuilder;
 import com.robo4j.core.RoboBuilderException;
 import com.robo4j.core.RoboContext;
-import com.robo4j.core.RoboReference;
 import com.robo4j.core.client.util.RoboClassLoader;
 import com.robo4j.core.util.SystemUtil;
 
@@ -32,9 +30,6 @@ import com.robo4j.core.util.SystemUtil;
  * @author Miro Wengner (@miragemiko)
  */
 public class CameraClientDeclarativeMain {
-
-	private static final int DEFAULT_INIT_VALUE = 0;
-	private static final int PERIOD_SECONDS = 4;
 
 	public static void main(String[] args) throws RoboBuilderException, IOException {
 		RoboBuilder builder = new RoboBuilder().add(RoboClassLoader.getInstance().getResource("robo4j.xml"));
@@ -46,10 +41,6 @@ public class CameraClientDeclarativeMain {
 
 		System.out.println("State after start:");
 		System.out.println(SystemUtil.printStateReport(system));
-
-		RoboReference<Boolean> imageController = system.getReference("imageController");
-		system.getScheduler().schedule(imageController, true,DEFAULT_INIT_VALUE,  PERIOD_SECONDS, TimeUnit.SECONDS);
-
 
 		System.out.println("Press enter to quit!");
 		System.in.read();

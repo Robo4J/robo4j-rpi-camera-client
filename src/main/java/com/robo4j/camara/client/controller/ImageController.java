@@ -20,6 +20,8 @@ package com.robo4j.camara.client.controller;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,12 +35,10 @@ import com.robo4j.core.RoboContext;
 import com.robo4j.core.RoboUnit;
 import com.robo4j.core.client.util.RoboHttpUtils;
 import com.robo4j.core.configuration.Configuration;
+import com.robo4j.core.httpunit.Constants;
 import com.robo4j.core.httpunit.codec.CameraMessage;
 import com.robo4j.core.httpunit.codec.CameraMessageCodec;
 import com.robo4j.core.logging.SimpleLoggingUtil;
-import com.robo4j.core.util.ConstantUtil;
-
-import sun.net.util.IPAddressUtil;
 
 /**
  * @author Marcus Hirt (@hirt)
@@ -46,6 +46,7 @@ import sun.net.util.IPAddressUtil;
  */
 public class ImageController extends RoboUnit<Boolean> {
 	private static final String DEFAULT_ENCODING = "UTF-8";
+	private static final String KEY_PROVIDER = "provider";
 	private static final String KEY_WIDTH = "width";
 	private static final String KEY_HEIGHT = "height";
 	private static final String KEY_TIMEOUT = "timeout";
@@ -54,7 +55,8 @@ public class ImageController extends RoboUnit<Boolean> {
 	private static final String KEY_BRIGHTNESS = "brightness";
 	private static final String KEY_CONTRAST = "contrast";
 	private static final String KEY_SATURATION = "saturation";
-	private static final String RASPI_CAMERA = "raspistill";
+	private static final String RASPISTILL_CAMERA = "raspistill";
+	private static final String RASPIVID_CAMERA = "raspivid";
 	private static final String SPACE = "\u0020";
 	private final CameraMessageCodec codec = new CameraMessageCodec();
 
@@ -63,11 +65,12 @@ public class ImageController extends RoboUnit<Boolean> {
 			.put(KEY_HEIGHT, "-h").put(KEY_TIMEOUT, "-t").put(KEY_QUALITY, "-q").put(KEY_SHARPNESS, "-sh")
 			.put(KEY_BRIGHTNESS, "-br").put(KEY_CONTRAST, "-co").put(KEY_SATURATION, "-sa").create();
 	private static final int CONTENT_END = -1;
-	private static final String DEFAULT_SETUP = "-n -e jpg -vf -hf -o -";
+	private static final String DEFAULT_IMAGE_SETUP = "-n -e png -tl 100 --nopreview --timeout 1 --exposure sport -o -";
 	private static String cameraCommand;
 	private String targetOut;
 	private String client;
 	private String clientUri;
+	private String provider;
 
 	public ImageController(RoboContext context, String id) {
 		super(Boolean.class, context, id);
@@ -80,15 +83,28 @@ public class ImageController extends RoboUnit<Boolean> {
 		parameters.put(KEY_WIDTH, configuration.getString(KEY_WIDTH, "320")); // 64
 		parameters.put(KEY_HEIGHT, configuration.getString(KEY_HEIGHT, "240")); // 45
 
-		StringBuilder sb = new StringBuilder(RASPI_CAMERA).append(SPACE)
-				.append(parameters.entrySet().stream().map(e -> {
-					StringBuilder c = new StringBuilder();
-					if (raspistillProperties.containsKey(e.getKey())) {
-						return c.append(raspistillProperties.get(e.getKey())).append(SPACE).append(e.getValue())
-								.toString();
-					}
-					return null;
-				}).filter(Objects::nonNull).collect(Collectors.joining(SPACE))).append(SPACE).append(DEFAULT_SETUP);
+		provider = configuration.getString(KEY_PROVIDER, RASPISTILL_CAMERA);
+
+		StringBuilder sb = new StringBuilder();
+
+		switch (provider) {
+		case RASPISTILL_CAMERA:
+			sb.append(RASPISTILL_CAMERA).append(SPACE).append(parameters.entrySet().stream().map(e -> {
+				StringBuilder c = new StringBuilder();
+				if (raspistillProperties.containsKey(e.getKey())) {
+					return c.append(raspistillProperties.get(e.getKey())).append(SPACE).append(e.getValue()).toString();
+				}
+				return null;
+			}).filter(Objects::nonNull).collect(Collectors.joining(SPACE))).append(SPACE).append(DEFAULT_IMAGE_SETUP);
+			break;
+		case RASPIVID_CAMERA:
+			sb.append(RASPIVID_CAMERA).append(SPACE).append("-o vid.h264 -w 320 -h 240");
+
+			break;
+		default:
+			throw new IllegalStateException("not allowed state provider: " + provider);
+		}
+
 		cameraCommand = sb.toString();
 		SimpleLoggingUtil.print(getClass(), "camera cameraCommand: " + cameraCommand);
 
@@ -99,12 +115,15 @@ public class ImageController extends RoboUnit<Boolean> {
 			throw ConfigurationException.createMissingConfigNameException("targetOut, client");
 		}
 
-		if (IPAddressUtil.isIPv4LiteralAddress(tmpClient)) {
+		try {
+			InetAddress inetAddress = InetAddress.getByName(tmpClient);
 			String clientPort = configuration.getString("clientPort", null);
-			client = clientPort == null ? tmpClient : tmpClient.concat(":").concat(clientPort);
-			clientUri = configuration.getString("clientUri", ConstantUtil.EMPTY_STRING);
-		} else {
-			client = null;
+			client = clientPort == null ? inetAddress.getHostAddress()
+					: inetAddress.getHostAddress().concat(":").concat(clientPort);
+			clientUri = configuration.getString("clientUri", Constants.EMPTY_STRING);
+		} catch (UnknownHostException e) {
+			SimpleLoggingUtil.error(getClass(), "unknown ip address", e);
+			throw ConfigurationException.createMissingConfigNameException("unknown ip address");
 		}
 
 	}
