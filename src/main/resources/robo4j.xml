@@ -28,14 +28,20 @@
     </roboUnit>
 
     <roboUnit id="imageController">
-        <class>com.robo4j.camara.client.controller.ImageController</class>
+        <class>com.robo4j.units.rpi.camera.RaspistillUnit</class>
         <config name="com.robo4j.core.root">
             <value name="targetOut" type="String">httpClient</value>
             <value name="storeTarget" type="String">imageProvider</value>
             <value name="client" type="String">192.168.178.42</value>
             <value name="clientPort" type="String">8027</value>
             <value name="clientUri" type="String">/imageController</value>
-            <value name="provider" type="String">raspistill</value>
+            <value name="width" type="String">640</value>
+            <value name="height" type="String">480</value>
+            <value name="exposure" type="String">nightpreview</value>
+            <value name="brightness" type="String">60</value>
+            <value name="contrast" type="String">30</value>
+            <value name="timeout" type="String">1</value>
+            <value name="timelapse" type="String">100</value>
         </config>
     </roboUnit>
 
