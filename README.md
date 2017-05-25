@@ -4,7 +4,7 @@ Robo4J RaspberryPi Camera client example
 The example is capable to take or post images to specific network destination. The example is designed 
 for standard raspberryPi camera modules (v1.3, v2). 
 
-The robo4j.xml system configuration descriptor allows to the user to specif camera properties.
+The **robo4j.xml** system configuration descriptor allows to the user to specif camera properties.
 ###### available configuration properties:
 * width
 * height
@@ -16,6 +16,27 @@ The robo4j.xml system configuration descriptor allows to the user to specif came
 * saturation
 * timelapse
 * exposure
+
+````
+<roboUnit id="imageController">
+  <class>com.robo4j.units.rpi.camera.RaspistillUnit</class>
+  <config name="com.robo4j.core.root">
+      <value name="targetOut" type="String">httpClient</value>
+      <value name="storeTarget" type="String">imageProvider</value>
+      <value name="client" type="String">192.168.178.42</value>
+      <value name="clientPort" type="String">8027</value>
+      <value name="clientUri" type="String">/imageController</value>
+      <value name="width" type="String">640</value>
+      <value name="height" type="String">480</value>
+      <value name="exposure" type="String">nightpreview</value>
+      <value name="brightness" type="String">60</value>
+      <value name="contrast" type="String">30</value>
+      <value name="timeout" type="String">1</value>
+      <value name="timelapse" type="String">100</value>
+  </config>
+</roboUnit>
+````
+
 
 properties values are according to the 'raspstill' util documentation
 
@@ -41,12 +62,16 @@ properties values are according to the 'raspstill' util documentation
     ````
     $ java -jar robo4j-rpi-camera-client-alpha-0.3.jar
     ````
+5. image is available over http get request
+   * open your favorite browser
+   * type link: http://<your raspberrypi ip>:8025/imageProvider?image.jpg
+   * imageProvider is the unit reponsible for providing taken image
+   * URI option: image.jpg is the access to the taken image
 
 Notes: 
 RaspberryPi must have successfully installed camera module otherwise default image will be displayed
 
-![Default Signal Unavailable]
-(https://github.com/Robo4J/robo4j-rpi-camera-client/blob/master/src/main/resources/20161021_NoSignal_240.jpg)
+![Default Signal Unavailable](https://github.com/Robo4J/robo4j-rpi-camera-client/blob/master/src/main/resources/20161021_NoSignal_240.jpg)
 
 Example of Running example on raspberryPi:
 ````
