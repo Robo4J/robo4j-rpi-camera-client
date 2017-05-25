@@ -65,9 +65,10 @@ public class ImageController extends RoboUnit<Boolean> {
 			.put(KEY_HEIGHT, "-h").put(KEY_TIMEOUT, "-t").put(KEY_QUALITY, "-q").put(KEY_SHARPNESS, "-sh")
 			.put(KEY_BRIGHTNESS, "-br").put(KEY_CONTRAST, "-co").put(KEY_SATURATION, "-sa").create();
 	private static final int CONTENT_END = -1;
-	private static final String DEFAULT_IMAGE_SETUP = "-n -e png -tl 100 --nopreview --timeout 1 --exposure sport -o -";
+	private static final String DEFAULT_IMAGE_SETUP = "-n -e jpg -tl 100 --nopreview --timeout 1 --exposure sport -o -";
 	private static String cameraCommand;
 	private String targetOut;
+	private String storeTarget;
 	private String client;
 	private String clientUri;
 	private String provider;
@@ -114,6 +115,8 @@ public class ImageController extends RoboUnit<Boolean> {
 		if (tmpClient == null || targetOut == null) {
 			throw ConfigurationException.createMissingConfigNameException("targetOut, client");
 		}
+
+		storeTarget = configuration.getString("storeTarget", null);
 
 		try {
 			InetAddress inetAddress = InetAddress.getByName(tmpClient);
@@ -173,6 +176,10 @@ public class ImageController extends RoboUnit<Boolean> {
 			}
 			imageArray.close();
 			final byte[] tmpBytes = baos.toByteArray().clone();
+
+			if (storeTarget != null && tmpBytes.length != 0) {
+				getContext().getReference(storeTarget).sendMessage(tmpBytes);
+			}
 
 			return new String(Base64.getEncoder().encode(tmpBytes), DEFAULT_ENCODING);
 		} catch (IOException e) {
