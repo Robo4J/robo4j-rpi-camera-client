@@ -44,7 +44,9 @@ properties values are according to the 'raspstill' util documentation
 
 Notes: 
 RaspberryPi must have successfully installed camera module otherwise default image will be displayed
-![Default Signal Unavailable] (robo4j-rpi-camera-client/src/main/resources/20161021_NoSignal_240.jpg)
+
+![Default Signal Unavailable]
+(https://github.com/Robo4J/robo4j-rpi-camera-client/blob/master/src/main/resources/20161021_NoSignal_240.jpg)
 
 Example of Running example on raspberryPi:
 ````
