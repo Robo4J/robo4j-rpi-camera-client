@@ -23,7 +23,7 @@ The **robo4j.xml** system configuration descriptor allows to the user to specif 
   <config name="com.robo4j.core.root">
       <value name="targetOut" type="String">httpClient</value>
       <value name="storeTarget" type="String">imageProvider</value>
-      <value name="client" type="String">192.168.178.42</value>
+      <value name="client" type="String">127.0.0.1</value>
       <value name="clientPort" type="String">8027</value>
       <value name="clientUri" type="String">/imageController</value>
       <value name="width" type="String">640</value>
@@ -56,7 +56,7 @@ properties values are according to the 'raspstill' util documentation
 3. upload jar file to raspberryPi
     * you can use scp command:
     ````
-    $ scp ./robo4j-rpi-camera-client-alpha-0.3.jar pi@192.x.x.x:/home/pi
+    $ scp ./robo4j-rpi-camera-client-alpha-0.3.jar pi@x.x.x.x:/home/pi
     ````
 4. run example on raspberryPi client
     ````
