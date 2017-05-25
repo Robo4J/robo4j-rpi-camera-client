@@ -1,23 +1,75 @@
-## Robo4J-rpi-lcd-example
-Robo4J RasbpberryPi LCD Demo example
+## Robo4J-rpi-camera-client
+Robo4J RaspberryPi Camera client example
 
-Example using Robo4J to send messages between the buttons and LCD in an Adafruit 2x16 LCD shield, as well as sending messages to the LCD over a REST API.
+The example is capable to take or post images to specific network destination. The example is designed 
+for standard raspberryPi camera modules (v1.3, v2). 
 
-The internal sever is accessible on the port 8025 and supports POST requests (no authentication required).
+The robo4j.xml system configuration descriptor allows to the user to specif camera properties.
+###### available configuration properties:
+* width
+* height
+* timeout
+* quality
+* sharpness
+* brightness
+* contrast
+* saturation
+* timelapse
+* exposure
 
-example : <ROBO4J_IP>:8025
+properties values are according to the 'raspstill' util documentation
 
-POST request: 
+### Requirements:
+1. clone and install robo4j project from Robo4J Github organisation
+    * Robo4J will be installed into the local maven repository
+    * command inside the project root folder: 
+    ````
+    $ gradle clean build install
+    ````
+2. clone Robo4J-rpi-camera-client example from Github 
+    * go the the directory and create FatJar file
+    * command:
+    ````
+    $ gralde clean fatJar
+    ````
+3. upload jar file to raspberryPi
+    * you can use scp command:
+    ````
+    $ scp ./robo4j-rpi-camera-client-alpha-0.3.jar pi@192.x.x.x:/home/pi
+    ````
+4. run example on raspberryPi client
+    ````
+    $ java -jar robo4j-rpi-camera-client-alpha-0.3.jar
+    ````
 
-{ 
-  "commands" : [
-     {"name"  : "up",
-     "target" : "lcd"
-     }
-  ]
-}
+Notes: 
+RaspberryPi must have successfully installed camera module otherwise default image will be displayed
+![Default Signal Unavailable] (robo4j-rpi-camera-client/src/main/resources/20161021_NoSignal_240.jpg)
 
-POST response: No Information about POST
+Example of Running example on raspberryPi:
+````
+INFO: cameraCommand:raspistill -br 60 -ex nightpreview -co 30 -w 640 -t 1 -tl 100 -h 480 -n -e jpg --nopreview -o -
+State before start:
+RoboSystem state Uninitialized
+================================================
+    httpClient                    Initialized
+    httpServer                    Initialized
+    imageController               Initialized
+    imageProvider                 Initialized
+    scheduleController            Initialized
+
+State after start:
+RoboSystem state Started
+================================================
+    httpClient                        Started
+    httpServer                        Started
+    imageController                   Started
+    imageProvider                     Started
+    scheduleController                Started
+
+Press enter to quit!
+````
+
 
 ## Building from Source
 The Robo4j framework uses [Gradle][] to build.
