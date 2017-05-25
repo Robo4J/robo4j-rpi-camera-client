@@ -36,7 +36,7 @@ The **robo4j.xml** system configuration descriptor allows to the user to specif 
   </config>
 </roboUnit>
 ````
-
+NOTE: options *client*, *clientPort* are not used in standalone example execution. Both define the Robo4J unit where the taken image should be send. Don't change them, you may want to change only camera realted properties.  
 
 properties values are according to the 'raspstill' util documentation
 
