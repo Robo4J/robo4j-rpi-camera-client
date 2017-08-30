@@ -17,13 +17,11 @@
 
 <robo4j>
     <roboUnit id="httpClient">
-        <class>com.robo4j.core.httpunit.HttpClientUnit</class>
+        <class>com.robo4j.socket.http.units.HttpClientUnit</class>
         <config name="com.robo4j.core.root">
             <value name="address" type="String">192.168.178.42</value>
             <value name="port" type="int">8027</value>
-            <targetUnits>
-                <value name="imageController" type="String">POST</value>
-            </targetUnits>
+            <value name="targetUnits" type="String">{"imageController":"POST"}</value>
         </config>
     </roboUnit>
     <roboUnit id="imageController">
@@ -34,8 +32,8 @@
             <value name="client" type="String">192.168.178.42</value>
             <value name="clientPort" type="String">8027</value>
             <value name="clientUri" type="String">/imageController</value>
-            <value name="width" type="String">640</value>
-            <value name="height" type="String">480</value>
+            <value name="width" type="String">480</value>
+            <value name="height" type="String">360</value>
             <value name="rotation" type="String">180</value>
             <!--<value name="exposure" type="String">auto</value>-->
             <!--<value name="brightness" type="String">80</value>-->
@@ -44,25 +42,6 @@
             <value name="timelapse" type="String">100</value>
         </config>
     </roboUnit>
-    <roboUnit id="dbSqlUnit">
-        <class>com.robo4j.db.sql.SQLDataSourceUnit</class>
-        <config name="com.robo4j.core.root">
-            <value name="sourceType" type="String">h2</value>
-            <value name="packages" type="String">com.robo4j.db.sql.model</value>
-            <value name="limit" type="Integer">3</value>
-            <value name="sorted" type="String">asc</value>
-            <value name="hibernate.hbm2ddl.auto" type="String">create</value>
-            <value name="targetUnit" type="String">imagePersistenceUnit</value>
-        </config>
-    </roboUnit>
-    <roboUnit id="imagePersistenceUnit">
-        <class>com.robo4j.db.sql.ImageSQLPersistenceUnit</class>
-        <config name="com.robo4j.core.root">
-            <value name="persistenceUnit" type="String">dbSqlUnit</value>
-            <value name="config" type="String">default</value>
-        </config>
-    </roboUnit>
-
     <roboUnit id="scheduleController">
         <class>com.robo4j.core.concurrency.SchedulePeriodUnit</class>
         <config name="com.robo4j.core.root">
@@ -74,21 +53,18 @@
     </roboUnit>
 
     <roboUnit id="httpServer">
-        <class>com.robo4j.core.httpunit.HttpServerUnit</class>
+        <class>com.robo4j.socket.http.units.HttpServerUnit</class>
         <config name="com.robo4j.core.root">
             <value name="port" type="int">8025</value>
             <value name="target" type="String">imageProvider</value>
-            <value name="packages" type="String">com.robo4j.core.httpunit.codec</value>
-            <targetUnits>
-                <value name="imageProvider" type="String">GET</value>
-            </targetUnits>
+            <value name="packages" type="String">com.robo4j.socket.http.codec</value>
+            <value name="targetUnits" type="String">{"imageProvider":"GET"}</value>
         </config>
     </roboUnit>
 
     <roboUnit id="imageProvider">
         <class>com.robo4j.camara.client.controller.ImageProvider</class>
         <config name="com.robo4j.core.root">
-            <value name="persistenceUnit" type="String">imageSQLPersistenceUnit</value>
         </config>
     </roboUnit>
 

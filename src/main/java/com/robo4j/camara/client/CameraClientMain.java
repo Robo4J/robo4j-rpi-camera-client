@@ -17,52 +17,34 @@
 
 package com.robo4j.camara.client;
 
+import java.util.Collections;
+import java.util.Map;
+
 import com.robo4j.camara.client.controller.ImageProvider;
 import com.robo4j.core.RoboSystem;
+import com.robo4j.core.RoboUnit;
 import com.robo4j.core.concurrency.SchedulePeriodUnit;
 import com.robo4j.core.configuration.Configuration;
 import com.robo4j.core.configuration.ConfigurationFactory;
-import com.robo4j.core.httpunit.HttpClientUnit;
-import com.robo4j.core.httpunit.HttpServerUnit;
 import com.robo4j.core.util.SystemUtil;
-import com.robo4j.db.sql.RoboPointSQLPersistenceUnit;
-import com.robo4j.db.sql.SQLDataSourceUnit;
-import com.robo4j.db.sql.util.DBSQLConstants;
+import com.robo4j.socket.http.units.HttpClientUnit;
+import com.robo4j.socket.http.units.HttpServerUnit;
+import com.robo4j.socket.http.util.JsonUtil;
 import com.robo4j.units.rpi.camera.RaspistillUnit;
 
 /**
- * Demo is optimised for PostgreSQL 9.4 Database It's necessary to prepare
- * Database schema by using Flyway. Flyway is available inside robo4j-db-sql
- * module.
- *
- *
+ * Demo is providing desired camera images
+ * and sending them to the client
+ * 
  * @author Marcus Hirt (@hirt)
  * @author Miro Wengner (@miragemiko)
  */
-public class CameraPersistenceClientMain {
-
-	private static final String PERSISTENCE_UNIT_NAME = "dbSqlUnit";
-	private static final String TARGET_STORAGE_UNIT = "imagePersistenceUnit";
+public class CameraClientMain {
 	private static final String IMAGE_CONTROLLER = "imageController";
 	private static final String IMAGE_PROVIDER = "imageProvider";
 
 	public static void main(String[] args) throws Exception {
 		final RoboSystem system = new RoboSystem();
-		Configuration sqlConfig = ConfigurationFactory.createEmptyConfiguration();
-		SQLDataSourceUnit sqlUnit = new SQLDataSourceUnit(system, PERSISTENCE_UNIT_NAME);
-		sqlConfig.setString("sourceType", "postgresql");
-		sqlConfig.setString("packages", "com.robo4j.db.sql.model");
-		sqlConfig.setInteger("limit", 3);
-		sqlConfig.setString("sorted", "asc");
-		sqlConfig.setString("hibernate.hbm2ddl.auto", "validate");
-		sqlConfig.setString("hibernate.connection.url", "jdbc:postgresql://192.168.178.42:5433/robo4j1");
-		sqlConfig.setString("targetUnit", TARGET_STORAGE_UNIT);
-
-		RoboPointSQLPersistenceUnit imageSQLPersistenceUnit = new RoboPointSQLPersistenceUnit(system,
-				TARGET_STORAGE_UNIT);
-		Configuration imageSQLPersistenceUnitConfig = ConfigurationFactory.createEmptyConfiguration();
-		imageSQLPersistenceUnitConfig.setString("persistenceUnit", PERSISTENCE_UNIT_NAME);
-		imageSQLPersistenceUnitConfig.setString("config", "default");
 
 		RaspistillUnit imageController = new RaspistillUnit(system, IMAGE_CONTROLLER);
 		Configuration config = ConfigurationFactory.createEmptyConfiguration();
@@ -82,8 +64,8 @@ public class CameraPersistenceClientMain {
 		config = ConfigurationFactory.createEmptyConfiguration();
 		config.setString("address", "192.168.178.42");
 		config.setInteger("port", 8027);
-		Configuration targetUnits1 = config.createChildConfiguration("targetUnits");
-		targetUnits1.setString("imageController", "POST");
+		Map<String, Object> httpClientConfig = Collections.singletonMap("imageController", "POST");
+		config.setString("targetUnits", JsonUtil.getJsonByMap(httpClientConfig));
 		httpClientUnit.initialize(config);
 
 		SchedulePeriodUnit schedulePeriodUnit = new SchedulePeriodUnit(system, "scheduleController");
@@ -98,21 +80,18 @@ public class CameraPersistenceClientMain {
 		config = ConfigurationFactory.createEmptyConfiguration();
 		config.setInteger("port", 8025);
 		config.setString("target", IMAGE_PROVIDER);
-		config.setString("packages", "com.robo4j.core.httpunit.codec");
-		Configuration targetUnits2 = config.createChildConfiguration("targetUnits");
-		targetUnits2.setString(IMAGE_PROVIDER, "GET");
+		config.setString("packages", "com.robo4j.socket.http.codec");
+		Map<String, Object> httpServerConfig = Collections.singletonMap(IMAGE_PROVIDER, "GET");
+		config.setString("targetUnits", JsonUtil.getJsonByMap(httpServerConfig));
 		httpServerUnit.initialize(config);
 
 		ImageProvider imageProvider = new ImageProvider(system, IMAGE_PROVIDER);
 		config = ConfigurationFactory.createEmptyConfiguration();
-		config.setString(DBSQLConstants.KEY_PERSISTENCE_UNIT, TARGET_STORAGE_UNIT);
 		imageProvider.initialize(config);
 
-		system.addUnits(sqlUnit, imageSQLPersistenceUnit, imageController, httpClientUnit, schedulePeriodUnit,
-				httpServerUnit, imageProvider);
-		sqlUnit.initialize(sqlConfig);
-		imageSQLPersistenceUnit.initialize(imageSQLPersistenceUnitConfig);
-		imageController.start();
+		RoboUnit<?>[] units = new RoboUnit<?>[] { imageController, httpClientUnit, schedulePeriodUnit, httpServerUnit,
+				imageProvider };
+		system.addUnits(units);
 
 		system.start();
 
