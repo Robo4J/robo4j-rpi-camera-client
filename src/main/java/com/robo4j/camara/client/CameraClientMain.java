@@ -80,6 +80,7 @@ public class CameraClientMain {
 		config = ConfigurationFactory.createEmptyConfiguration();
 		config.setInteger("port", 8025);
 		config.setString("target", IMAGE_PROVIDER);
+		config.setInteger("stopper", -1);
 		config.setString("packages", "com.robo4j.socket.http.codec");
 		Map<String, Object> httpServerConfig = Collections.singletonMap(IMAGE_PROVIDER, "GET");
 		config.setString("targetUnits", JsonUtil.getJsonByMap(httpServerConfig));

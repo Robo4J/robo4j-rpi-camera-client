@@ -31,8 +31,8 @@ import com.robo4j.core.util.SystemUtil;
 public class CameraClientDeclarativeMain {
 
 	public static void main(String[] args) throws RoboBuilderException, IOException {
-		RoboBuilder builder = new RoboBuilder()
-				.add(Thread.currentThread().getContextClassLoader().getResourceAsStream("robo4j.xml"));
+		RoboBuilder builder = new RoboBuilder(Thread.currentThread().getContextClassLoader().getResourceAsStream("robo4jSystem.xml"));
+		builder.add(Thread.currentThread().getContextClassLoader().getResourceAsStream("robo4j.xml"));
 		RoboContext system = builder.build();
 
 		System.out.println("State before start:");
