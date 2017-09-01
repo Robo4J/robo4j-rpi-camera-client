@@ -4,6 +4,41 @@ Robo4J RaspberryPi Camera client example
 The example is capable to take or post images to specific network destination. The example is designed 
 for standard raspberryPi camera modules (v1.3, v2). 
 
+
+### Let's start with example 
+* you need to have your camera connected/configure to your RapsberryPi device
+* go to project folder *release*
+* upload following files 
+```bash
+$scp ./robo4j.xml pi@<YOUR_IP>:/home/pi
+$scp ./robo4j-rpi-camera-client.jar pi@<YOUR_IP>:/home/pi
+``` 
+* login to your RaspberryPi device
+```bash
+$ssh pi@<YOUR_IP>
+``` 
+* IMPORTANT: configure your *robo4j.xml* configuration file by defining IP address where Robo4J Camera center is running
+```
+$vi robo4j.xml
+edit :
+ 1. <roboUnit id="httpClient">
+               <class>com.robo4j.socket.http.units.HttpClientUnit</class>
+               <config name="com.robo4j.core.root">
+                   <value name="address" type="String">...CHANGE_your-ip...192.0.0.42</value>
+ 2. <roboUnit id="imageController">
+            <class>com.robo4j.units.rpi.camera.RaspistillUnit</class>
+            <config name="com.robo4j.core.root">
+                <value name="targetOut" type="String">httpClient</value>
+                <value name="storeTarget" type="String">imageProvider</value>
+                <value name="client" type="String">...CHANGE_your-ip...192.0.0.42</value>
+```
+* after having cofiguration done, you can run following command 
+```bash
+$ java -jar ./robo4j-rpi-camera-client.jar ./robo4j.xml
+```
+* camera-client should star sending images on your Robo4J Camera-Center server, and you should see images there 
+
+
 The **robo4j.xml** system configuration descriptor allows to the user to specif camera properties.
 ###### available configuration properties:
 * width
@@ -39,6 +74,7 @@ The **robo4j.xml** system configuration descriptor allows to the user to specif 
 NOTE: options *client*, *clientPort* are not used in standalone example execution. Both define the Robo4J unit where the taken image should be send. Don't change them, you may want to change only camera realted properties.  
 
 properties values are according to the 'raspstill' util documentation
+
 
 ### Requirements:
 1. clone and install robo4j project from Robo4J Github organisation
