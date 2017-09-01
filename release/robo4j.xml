@@ -1,0 +1,69 @@
+<!--
+  ~ Copyright (c) 2014, 2017, Marcus Hirt, Miroslav Wengner
+  ~
+  ~ Robo4J is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Robo4J is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with Robo4J. If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<robo4j>
+    <roboUnit id="httpClient">
+        <class>com.robo4j.socket.http.units.HttpClientUnit</class>
+        <config name="com.robo4j.core.root">
+            <value name="address" type="String">192.0.0.42</value>
+            <value name="port" type="int">8027</value>
+            <value name="targetUnits" type="String">{"imageController":"POST"}</value>
+        </config>
+    </roboUnit>
+    <roboUnit id="imageController">
+        <class>com.robo4j.units.rpi.camera.RaspistillUnit</class>
+        <config name="com.robo4j.core.root">
+            <value name="targetOut" type="String">httpClient</value>
+            <value name="storeTarget" type="String">imageProvider</value>
+            <value name="client" type="String">192.0.0.42</value>
+            <value name="clientPort" type="String">8027</value>
+            <value name="clientUri" type="String">/imageController</value>
+            <value name="width" type="String">480</value>
+            <value name="height" type="String">360</value>
+            <value name="rotation" type="String">180</value>
+            <value name="timeout" type="String">1</value>
+            <value name="timelapse" type="String">100</value>
+        </config>
+    </roboUnit>
+    <roboUnit id="scheduleController">
+        <class>com.robo4j.core.concurrency.SchedulePeriodUnit</class>
+        <config name="com.robo4j.core.root">
+            <value name="unit" type="String">imageController</value>
+            <value name="delay" type="int">1</value>
+            <value name="period" type="int">500</value>
+            <value name="timeUnit" type="String">MILLISECONDS</value>
+        </config>
+    </roboUnit>
+
+    <roboUnit id="httpServer">
+        <class>com.robo4j.socket.http.units.HttpServerUnit</class>
+        <config name="com.robo4j.core.root">
+            <value name="port" type="int">8025</value>
+            <value name="target" type="String">imageProvider</value>
+            <value name="packages" type="String">com.robo4j.socket.http.codec</value>
+            <value name="targetUnits" type="String">{"imageProvider":"GET"}</value>
+            <value name="stopper" type="int">-1</value>
+        </config>
+    </roboUnit>
+
+    <roboUnit id="imageProvider">
+        <class>com.robo4j.camara.client.controller.ImageProvider</class>
+        <config name="com.robo4j.core.root">
+        </config>
+    </roboUnit>
+
+</robo4j>

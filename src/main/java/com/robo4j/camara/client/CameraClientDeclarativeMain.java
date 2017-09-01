@@ -17,7 +17,11 @@
 
 package com.robo4j.camara.client;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import com.robo4j.core.RoboBuilder;
 import com.robo4j.core.RoboBuilderException;
@@ -31,8 +35,30 @@ import com.robo4j.core.util.SystemUtil;
 public class CameraClientDeclarativeMain {
 
 	public static void main(String[] args) throws RoboBuilderException, IOException {
-		RoboBuilder builder = new RoboBuilder(Thread.currentThread().getContextClassLoader().getResourceAsStream("robo4jSystem.xml"));
-		builder.add(Thread.currentThread().getContextClassLoader().getResourceAsStream("robo4j.xml"));
+
+		InputStream configInputStream = null;
+
+		switch (args.length) {
+		case 0:
+			configInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("robo4j.xml");
+			System.out.println("Default configuration used");
+			break;
+		case 1:
+			Path path = Paths.get(args[0]);
+			configInputStream = new FileInputStream(path.toFile());
+			System.out.println("Robo4j config file has been used: " + args[0]);
+			break;
+		default:
+			System.out.println("Could not find the *.xml settings for the CameraClient!");
+			System.out.println("java -jar camera.jar robo4j.xml");
+			System.exit(2);
+			break;
+
+		}
+
+		RoboBuilder builder = new RoboBuilder(
+				Thread.currentThread().getContextClassLoader().getResourceAsStream("robo4jSystem.xml"));
+		builder.add(configInputStream);
 		RoboContext system = builder.build();
 
 		System.out.println("State before start:");
