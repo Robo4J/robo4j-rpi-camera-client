@@ -49,7 +49,6 @@
             <value name="target" type="String">imageProvider</value>
             <value name="packages" type="String">com.robo4j.socket.http.codec</value>
             <value name="targetUnits" type="String">{"imageProvider":"GET"}</value>
-            <value name="stopper" type="int">-1</value>
         </config>
     </roboUnit>
     <roboUnit id="scheduleController">

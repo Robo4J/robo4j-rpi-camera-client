@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import com.robo4j.core.AttributeDescriptor;
+import com.robo4j.core.BlockingTrait;
 import com.robo4j.core.ConfigurationException;
 import com.robo4j.core.DefaultAttributeDescriptor;
 import com.robo4j.core.RoboContext;
@@ -36,6 +37,7 @@ import com.robo4j.core.logging.SimpleLoggingUtil;
  * @author Marcus Hirt (@hirt)
  * @author Miro Wengner (@miragemiko)
  */
+@BlockingTrait
 public class ImageProvider extends RoboUnit<byte[]> {
 
 	private static final String ATTRIBUTE_IMAGE_NAME = "image.jpg";
