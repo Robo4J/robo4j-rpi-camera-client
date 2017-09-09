@@ -32,9 +32,9 @@
             <value name="client" type="String">192.168.178.42</value>
             <value name="clientPort" type="String">8027</value>
             <value name="clientUri" type="String">/imageController</value>
-            <value name="width" type="String">480</value>
-            <value name="height" type="String">360</value>
-            <value name="rotation" type="String">180</value>
+            <value name="width" type="String">320</value>
+            <value name="height" type="String">240</value>
+            <!--<value name="rotation" type="String">180</value>-->
             <!--<value name="exposure" type="String">auto</value>-->
             <!--<value name="brightness" type="String">80</value>-->
             <!--<value name="contrast" type="String">0</value>-->
@@ -42,16 +42,6 @@
             <value name="timelapse" type="String">100</value>
         </config>
     </roboUnit>
-    <roboUnit id="scheduleController">
-        <class>com.robo4j.core.concurrency.SchedulePeriodUnit</class>
-        <config name="com.robo4j.core.root">
-            <value name="unit" type="String">imageController</value>
-            <value name="delay" type="int">1</value>
-            <value name="period" type="int">500</value>
-            <value name="timeUnit" type="String">MILLISECONDS</value>
-        </config>
-    </roboUnit>
-
     <roboUnit id="httpServer">
         <class>com.robo4j.socket.http.units.HttpServerUnit</class>
         <config name="com.robo4j.core.root">
@@ -62,11 +52,18 @@
             <value name="stopper" type="int">-1</value>
         </config>
     </roboUnit>
-
+    <roboUnit id="scheduleController">
+        <class>com.robo4j.units.rpi.camera.CameraPeriodUnit</class>
+        <config name="com.robo4j.core.root">
+            <value name="unit" type="String">imageController</value>
+            <value name="delay" type="int">1</value>
+            <value name="period" type="int">500</value>
+            <value name="timeUnit" type="String">MILLISECONDS</value>
+        </config>
+    </roboUnit>
     <roboUnit id="imageProvider">
         <class>com.robo4j.camara.client.controller.ImageProvider</class>
         <config name="com.robo4j.core.root">
         </config>
     </roboUnit>
-
 </robo4j>

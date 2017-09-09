@@ -38,7 +38,6 @@ import com.robo4j.core.logging.SimpleLoggingUtil;
  */
 public class ImageProvider extends RoboUnit<byte[]> {
 
-	private static final String ROBO_POINT_TYPE = "image";
 	private static final String ATTRIBUTE_IMAGE_NAME = "image.jpg";
 	private final static Collection<AttributeDescriptor<?>> KNOWN_ATTRIBUTES = Collections.unmodifiableCollection(
 			Collections.singleton(DefaultAttributeDescriptor.create(byte[].class, ATTRIBUTE_IMAGE_NAME)));

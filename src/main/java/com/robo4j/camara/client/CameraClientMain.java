@@ -19,22 +19,22 @@ package com.robo4j.camara.client;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import com.robo4j.camara.client.controller.ImageProvider;
-import com.robo4j.core.RoboSystem;
-import com.robo4j.core.RoboUnit;
-import com.robo4j.core.concurrency.SchedulePeriodUnit;
+import com.robo4j.core.RoboBuilder;
+import com.robo4j.core.RoboContext;
 import com.robo4j.core.configuration.Configuration;
 import com.robo4j.core.configuration.ConfigurationFactory;
 import com.robo4j.core.util.SystemUtil;
 import com.robo4j.socket.http.units.HttpClientUnit;
 import com.robo4j.socket.http.units.HttpServerUnit;
 import com.robo4j.socket.http.util.JsonUtil;
+import com.robo4j.units.rpi.camera.CameraPeriodUnit;
 import com.robo4j.units.rpi.camera.RaspistillUnit;
 
 /**
- * Demo is providing desired camera images
- * and sending them to the client
+ * Demo is providing desired camera images and sending them to the client
  * 
  * @author Marcus Hirt (@hirt)
  * @author Miro Wengner (@miragemiko)
@@ -44,39 +44,28 @@ public class CameraClientMain {
 	private static final String IMAGE_PROVIDER = "imageProvider";
 
 	public static void main(String[] args) throws Exception {
-		final RoboSystem system = new RoboSystem();
+		final RoboBuilder builder = new RoboBuilder();
 
-		RaspistillUnit imageController = new RaspistillUnit(system, IMAGE_CONTROLLER);
 		Configuration config = ConfigurationFactory.createEmptyConfiguration();
 		config.setString("targetOut", "httpClient");
 		config.setString("storeTarget", IMAGE_PROVIDER);
 		config.setString("client", "192.168.178.42");
 		config.setString("clientPort", "8027");
 		config.setString("clientUri", "/imageController");
-		config.setString("width", "640");
-		config.setString("height", "480");
+		config.setString("width", "320");
+		config.setString("height", "240");
 		config.setString("rotation", "180");
 		config.setString("timeout", "1");
 		config.setString("timelapse", "100");
-		imageController.initialize(config);
+		builder.add(RaspistillUnit.class, config, IMAGE_CONTROLLER);
 
-		HttpClientUnit httpClientUnit = new HttpClientUnit(system, "httpClient");
 		config = ConfigurationFactory.createEmptyConfiguration();
 		config.setString("address", "192.168.178.42");
 		config.setInteger("port", 8027);
 		Map<String, Object> httpClientConfig = Collections.singletonMap("imageController", "POST");
 		config.setString("targetUnits", JsonUtil.getJsonByMap(httpClientConfig));
-		httpClientUnit.initialize(config);
+		builder.add(HttpClientUnit.class, config, "httpClient");
 
-		SchedulePeriodUnit schedulePeriodUnit = new SchedulePeriodUnit(system, "scheduleController");
-		config = ConfigurationFactory.createEmptyConfiguration();
-		config.setString("unit", IMAGE_CONTROLLER);
-		config.setInteger("delay", 1);
-		config.setInteger("period", 500);
-		config.setString("timeUnit", "MILLISECONDS");
-		schedulePeriodUnit.initialize(config);
-
-		HttpServerUnit httpServerUnit = new HttpServerUnit(system, "httpServer");
 		config = ConfigurationFactory.createEmptyConfiguration();
 		config.setInteger("port", 8025);
 		config.setString("target", IMAGE_PROVIDER);
@@ -84,26 +73,25 @@ public class CameraClientMain {
 		config.setString("packages", "com.robo4j.socket.http.codec");
 		Map<String, Object> httpServerConfig = Collections.singletonMap(IMAGE_PROVIDER, "GET");
 		config.setString("targetUnits", JsonUtil.getJsonByMap(httpServerConfig));
-		httpServerUnit.initialize(config);
+		builder.add(HttpServerUnit.class, config, "httpServer");
+		builder.add(ImageProvider.class, IMAGE_PROVIDER);
 
-		ImageProvider imageProvider = new ImageProvider(system, IMAGE_PROVIDER);
 		config = ConfigurationFactory.createEmptyConfiguration();
-		imageProvider.initialize(config);
+		config.setString("unit", IMAGE_CONTROLLER);
+		config.setInteger("delay", 1);
+		config.setInteger("period", 500);
+		config.setString("timeUnit", "MILLISECONDS");
+		builder.add(CameraPeriodUnit.class, config, "scheduleController");
 
-		RoboUnit<?>[] units = new RoboUnit<?>[] { imageController, httpClientUnit, schedulePeriodUnit, httpServerUnit,
-				imageProvider };
-		system.addUnits(units);
-
+		RoboContext system = builder.build();
 		system.start();
 
 		System.out.println("System: State after start:");
 		System.out.println(SystemUtil.printStateReport(system));
 
-		System.out.println("State after start:");
-		System.out.println(SystemUtil.printStateReport(system));
-
 		System.out.println("Press enter to quit!");
 		System.in.read();
+		system.stop();
 		system.shutdown();
 		System.out.println("System: State after shutdown:");
 		System.out.println(SystemUtil.printStateReport(system));
