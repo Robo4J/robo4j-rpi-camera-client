@@ -56,7 +56,7 @@
         <config name="com.robo4j.core.root">
             <value name="unit" type="String">imageController</value>
             <value name="delay" type="int">1</value>
-            <value name="period" type="int">500</value>
+            <value name="period" type="int">200</value>
             <value name="timeUnit" type="String">MILLISECONDS</value>
         </config>
     </roboUnit>
