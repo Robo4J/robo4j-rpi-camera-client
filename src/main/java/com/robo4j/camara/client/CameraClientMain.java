@@ -19,7 +19,6 @@ package com.robo4j.camara.client;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import com.robo4j.camara.client.controller.ImageProvider;
 import com.robo4j.core.RoboBuilder;
