@@ -41,6 +41,7 @@ import com.robo4j.units.rpi.camera.RaspistillUnit;
 public class CameraClientMain {
 	private static final String IMAGE_CONTROLLER = "imageController";
 	private static final String IMAGE_PROVIDER = "imageProvider";
+	private static final String SERVER_IP = "192.168.178.42";
 
 	public static void main(String[] args) throws Exception {
 		final RoboBuilder builder = new RoboBuilder();
@@ -48,7 +49,7 @@ public class CameraClientMain {
 		Configuration config = ConfigurationFactory.createEmptyConfiguration();
 		config.setString("targetOut", "httpClient");
 		config.setString("storeTarget", IMAGE_PROVIDER);
-		config.setString("client", "192.168.178.42");
+		config.setString("client", SERVER_IP);
 		config.setString("clientPort", "8027");
 		config.setString("clientUri", "/imageController");
 		config.setString("width", "320");
@@ -59,7 +60,7 @@ public class CameraClientMain {
 		builder.add(RaspistillUnit.class, config, IMAGE_CONTROLLER);
 
 		config = ConfigurationFactory.createEmptyConfiguration();
-		config.setString("address", "192.168.178.42");
+		config.setString("address", SERVER_IP);
 		config.setInteger("port", 8027);
 		Map<String, Object> httpClientConfig = Collections.singletonMap("imageController", "POST");
 		config.setString("targetUnits", JsonUtil.getJsonByMap(httpClientConfig));
