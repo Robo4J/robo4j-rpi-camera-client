@@ -16,8 +16,8 @@
   -->
 <roboSystem id="cameraSystem">
     <config name="com.robo4j.core.root">
-        <value name="poolSizeScheduler" type="int">8</value>
-        <value name="poolSizeWorker" type="int">8</value>
-        <value name="poolSizeBlocking" type="int">1</value>
+        <value name="poolSizeScheduler" type="int">4</value>
+        <value name="poolSizeWorker" type="int">4</value>
+        <value name="poolSizeBlocking" type="int">2</value>
     </config>
 </roboSystem>

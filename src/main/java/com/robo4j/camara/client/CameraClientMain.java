@@ -20,7 +20,6 @@ package com.robo4j.camara.client;
 import java.util.Collections;
 import java.util.Map;
 
-import com.robo4j.camara.client.controller.ImageProvider;
 import com.robo4j.core.RoboBuilder;
 import com.robo4j.core.RoboContext;
 import com.robo4j.core.configuration.Configuration;
@@ -74,7 +73,6 @@ public class CameraClientMain {
 		Map<String, Object> httpServerConfig = Collections.singletonMap(IMAGE_PROVIDER, "GET");
 		config.setString("targetUnits", JsonUtil.getJsonByMap(httpServerConfig));
 		builder.add(HttpServerUnit.class, config, "httpServer");
-		builder.add(ImageProvider.class, IMAGE_PROVIDER);
 
 		config = ConfigurationFactory.createEmptyConfiguration();
 		config.setString("unit", IMAGE_CONTROLLER);
