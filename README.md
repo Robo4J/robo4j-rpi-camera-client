@@ -23,11 +23,11 @@ $vi robo4j.xml
 edit :
  1. <roboUnit id="httpClient">
                <class>com.robo4j.socket.http.units.HttpClientUnit</class>
-               <config name="com.robo4j.core.root">
+               <config name="com.robo4j.root">
                    <value name="address" type="String">...CHANGE_your-ip...192.0.0.42</value>
  2. <roboUnit id="imageController">
             <class>com.robo4j.units.rpi.camera.RaspistillUnit</class>
-            <config name="com.robo4j.core.root">
+            <config name="com.robo4j.root">
                 <value name="targetOut" type="String">httpClient</value>
                 <value name="storeTarget" type="String">imageProvider</value>
                 <value name="client" type="String">...CHANGE_your-ip...192.0.0.42</value>
@@ -55,7 +55,7 @@ The **robo4j.xml** system configuration descriptor allows to the user to specif 
 ````
 <roboUnit id="imageController">
   <class>com.robo4j.units.rpi.camera.RaspistillUnit</class>
-  <config name="com.robo4j.core.root">
+  <config name="com.robo4j.root">
       <value name="targetOut" type="String">httpClient</value>
       <value name="storeTarget" type="String">imageProvider</value>
       <value name="client" type="String">127.0.0.1</value>

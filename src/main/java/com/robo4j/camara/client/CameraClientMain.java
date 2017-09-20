@@ -20,11 +20,11 @@ package com.robo4j.camara.client;
 import java.util.Collections;
 import java.util.Map;
 
-import com.robo4j.core.RoboBuilder;
-import com.robo4j.core.RoboContext;
-import com.robo4j.core.configuration.Configuration;
-import com.robo4j.core.configuration.ConfigurationFactory;
-import com.robo4j.core.util.SystemUtil;
+import com.robo4j.RoboBuilder;
+import com.robo4j.RoboContext;
+import com.robo4j.configuration.Configuration;
+import com.robo4j.configuration.ConfigurationFactory;
+import com.robo4j.util.SystemUtil;
 import com.robo4j.socket.http.units.HttpClientUnit;
 import com.robo4j.socket.http.units.HttpServerUnit;
 import com.robo4j.socket.http.util.JsonUtil;
