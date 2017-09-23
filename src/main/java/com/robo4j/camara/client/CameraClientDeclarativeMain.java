@@ -17,12 +17,11 @@
 
 package com.robo4j.camara.client;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.concurrent.TimeUnit;
 
 import com.robo4j.RoboBuilder;
 import com.robo4j.RoboBuilderException;
@@ -46,7 +45,7 @@ public class CameraClientDeclarativeMain {
 			break;
 		case 1:
 			Path path = Paths.get(args[0]);
-			configInputStream = new FileInputStream(path.toFile());
+			configInputStream = Files.newInputStream(path);
 			System.out.println("Robo4j config file has been used: " + args[0]);
 			break;
 		default:
