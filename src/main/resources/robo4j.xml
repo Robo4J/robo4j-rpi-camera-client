@@ -21,7 +21,6 @@
         <config name="com.robo4j.root">
             <value name="address" type="String">192.168.178.42</value>
             <value name="port" type="int">8027</value>
-            <value name="mode" type="boolean">true</value>
             <value name="targetUnits" type="String">{"imageController":"POST"}</value>
         </config>
     </roboUnit>
@@ -32,8 +31,8 @@
             <value name="client" type="String">192.168.178.42</value>
             <value name="clientPort" type="String">8027</value>
             <value name="clientUri" type="String">/units/imageProcessor</value>
-            <value name="width" type="String">320</value>
-            <value name="height" type="String">240</value>
+            <value name="width" type="String">640</value>
+            <value name="height" type="String">480</value>
             <!--<value name="rotation" type="String">180</value>-->
             <!--<value name="exposure" type="String">auto</value>-->
             <!--<value name="brightness" type="String">80</value>-->
