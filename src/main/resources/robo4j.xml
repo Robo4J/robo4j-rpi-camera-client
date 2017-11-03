@@ -22,7 +22,7 @@
             <value name="address" type="String">192.168.0.3</value>
             <value name="port" type="int">8027</value>
             <value name="keepAlive" type="boolean">true</value>
-            <value name="bufferCapacity" type="int">700000</value>
+            <value name="bufferCapacity" type="int">600000</value>
             <value name="targetUnits" type="String">{"imageController":"POST"}</value>
         </config>
     </roboUnit>
