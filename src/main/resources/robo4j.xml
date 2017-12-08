@@ -17,36 +17,32 @@
 
 <robo4j>
     <roboUnit id="httpClient">
-        <class>com.robo4j.socket.http.units.HttpClientUnit</class>
+        <class>com.robo4j.socket.http.units.HttpClientDescriptorUnit</class>
         <config name="com.robo4j.root">
-            <value name="address" type="String">192.168.0.3</value>
-            <value name="port" type="int">8027</value>
-            <value name="keepAlive" type="boolean">true</value>
-            <value name="bufferCapacity" type="int">600000</value>
-            <value name="targetUnits" type="String">{"imageController":"POST"}</value>
+            <value name="address" type="String">192.168.0.42</value>
+            <value name="port" type="int">8037</value>
+            <value name="targetUnits" type="String">[{"imageProcessor":["POST"]}]</value>
         </config>
     </roboUnit>
-    <roboUnit id="imageController">
+    <roboUnit id="imageDescriptor">
+        <class>com.robo4j.socket.http.units.CameraImageDescriptorUnit</class>
+        <config name="com.robo4j.root">
+            <value name="target" type="String">httpClient</value>
+            <value name="host" type="String">192.168.0.42</value>
+            <value name="hostPort" type="String">8037</value>
+            <value name="remoteUnits" type="String">[{"imageProcessor":["POST"]}]</value>
+        </config>
+    </roboUnit>
+    <roboUnit id="camera">
         <class>com.robo4j.units.rpi.camera.RaspistillUnit</class>
         <config name="com.robo4j.root">
-            <value name="targetOut" type="String">httpClient</value>
-            <value name="client" type="String">192.168.0.3</value>
-            <value name="clientPort" type="String">8027</value>
-            <value name="clientUri" type="String">/units/imageProcessor</value>
-            <value name="width" type="String">640</value>
-            <value name="height" type="String">480</value>
-            <!--<value name="rotation" type="String">180</value>-->
-            <!--<value name="exposure" type="String">auto</value>-->
-            <!--<value name="brightness" type="String">80</value>-->
-            <!--<value name="contrast" type="String">0</value>-->
-            <value name="timeout" type="String">1</value>
-            <value name="timelapse" type="String">100</value>
+            <value name="target" type="String">imageDescriptor</value>
         </config>
     </roboUnit>
     <roboUnit id="httpServer">
         <class>com.robo4j.socket.http.units.HttpServerUnit</class>
         <config name="com.robo4j.root">
-            <value name="port" type="int">8025</value>
+            <value name="port" type="int">8035</value>
         </config>
     </roboUnit>
 </robo4j>

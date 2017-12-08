@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>robo4j-rpi-lcd-example</name>
-	<comment>Project robo4j-rpi-lcd-example created by Buildship.</comment>
+	<name>robo4j-rpi-camera-client</name>
+	<comment>Project robo4j-rpi-camera-client created by Buildship.</comment>
 	<projects>
 	</projects>
 	<buildSpec>

@@ -17,15 +17,16 @@
 
 package com.robo4j.camara.client;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import com.robo4j.RoboBuilder;
-import com.robo4j.RoboBuilderException;
 import com.robo4j.RoboContext;
+import com.robo4j.RoboReference;
+import com.robo4j.units.rpi.camera.RaspistillRequest;
+import com.robo4j.units.rpi.camera.RpiCameraProperty;
 import com.robo4j.util.SystemUtil;
 
 /**
@@ -34,26 +35,26 @@ import com.robo4j.util.SystemUtil;
  */
 public class CameraClientDeclarativeMain {
 
-	public static void main(String[] args) throws RoboBuilderException, IOException {
+	public static void main(String[] args) throws Exception {
+
 
 		InputStream configInputStream = null;
 
 		switch (args.length) {
-		case 0:
-			configInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("robo4j.xml");
-			System.out.println("Default configuration used");
-			break;
-		case 1:
-			Path path = Paths.get(args[0]);
-			configInputStream = Files.newInputStream(path);
-			System.out.println("Robo4j config file has been used: " + args[0]);
-			break;
-		default:
-			System.out.println("Could not find the *.xml settings for the CameraClient!");
-			System.out.println("java -jar camera.jar robo4j.xml");
-			System.exit(2);
-			break;
-
+			case 0:
+				configInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("robo4j.xml");
+				System.out.println("Default configuration used");
+				break;
+			case 1:
+				Path path = Paths.get(args[0]);
+				configInputStream = Files.newInputStream(path);
+				System.out.println("Robo4j config file has been used: " + args[0]);
+				break;
+			default:
+				System.out.println("Could not find the *.xml settings for the CameraClient!");
+				System.out.println("java -jar camera.jar robo4j.xml");
+				System.exit(2);
+				break;
 		}
 
 		RoboBuilder builder = new RoboBuilder(
@@ -68,9 +69,21 @@ public class CameraClientDeclarativeMain {
 		System.out.println("State after start:");
 		System.out.println(SystemUtil.printStateReport(system));
 
+        final RaspistillRequest activeRequest = new RaspistillRequest(true)
+                .put(RpiCameraProperty.WIDTH, "1024")
+                .put(RpiCameraProperty.HEIGHT, "768")
+                .put(RpiCameraProperty.TIMEOUT, "1")
+                .put(RpiCameraProperty.TIMELAPSE, "100")
+				.put(RpiCameraProperty.ENCODING, "jpg")
+				.put(RpiCameraProperty.NOPREVIEW, "")
+				.put(RpiCameraProperty.OUTPUT, "-");
+
+        RoboReference<RaspistillRequest> cameraUnit = system.getReference("camera");
+        cameraUnit.sendMessage(activeRequest);
+
 		System.out.println("Press enter to quit!");
 		System.in.read();
 		system.shutdown();
-	}
 
+	}
 }
