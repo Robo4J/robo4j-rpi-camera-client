@@ -37,24 +37,23 @@ public class CameraClientDeclarativeMain {
 
 	public static void main(String[] args) throws Exception {
 
-
 		InputStream configInputStream = null;
 
 		switch (args.length) {
-			case 0:
-				configInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("robo4j.xml");
-				System.out.println("Default configuration used");
-				break;
-			case 1:
-				Path path = Paths.get(args[0]);
-				configInputStream = Files.newInputStream(path);
-				System.out.println("Robo4j config file has been used: " + args[0]);
-				break;
-			default:
-				System.out.println("Could not find the *.xml settings for the CameraClient!");
-				System.out.println("java -jar camera.jar robo4j.xml");
-				System.exit(2);
-				break;
+		case 0:
+			configInputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("robo4j.xml");
+			System.out.println("Default configuration used");
+			break;
+		case 1:
+			Path path = Paths.get(args[0]);
+			configInputStream = Files.newInputStream(path);
+			System.out.println("Robo4j config file has been used: " + args[0]);
+			break;
+		default:
+			System.out.println("Could not find the *.xml settings for the CameraClient!");
+			System.out.println("java -jar camera.jar robo4j.xml");
+			System.exit(2);
+			break;
 		}
 
 		RoboBuilder builder = new RoboBuilder(
@@ -69,17 +68,17 @@ public class CameraClientDeclarativeMain {
 		System.out.println("State after start:");
 		System.out.println(SystemUtil.printStateReport(system));
 
-        final RaspistillRequest activeRequest = new RaspistillRequest(true)
-                .put(RpiCameraProperty.WIDTH, "1024")
-                .put(RpiCameraProperty.HEIGHT, "768")
-                .put(RpiCameraProperty.TIMEOUT, "1")
-                .put(RpiCameraProperty.TIMELAPSE, "100")
-				.put(RpiCameraProperty.ENCODING, "jpg")
+		//@formatter:off
+		final RaspistillRequest activeRequest = new RaspistillRequest(true)
+				.put(RpiCameraProperty.WIDTH, "640")
+				.put(RpiCameraProperty.HEIGHT, "480").put(RpiCameraProperty.TIMEOUT, "2")
+				.put(RpiCameraProperty.TIMELAPSE, "100").put(RpiCameraProperty.ENCODING, "jpg")
 				.put(RpiCameraProperty.NOPREVIEW, "")
 				.put(RpiCameraProperty.OUTPUT, "-");
+		//@formatter:on
 
-        RoboReference<RaspistillRequest> cameraUnit = system.getReference("camera");
-        cameraUnit.sendMessage(activeRequest);
+		RoboReference<RaspistillRequest> cameraUnit = system.getReference("camera");
+		cameraUnit.sendMessage(activeRequest);
 
 		System.out.println("Press enter to quit!");
 		System.in.read();
