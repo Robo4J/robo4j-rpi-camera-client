@@ -18,19 +18,14 @@
 <robo4j>
     <roboUnit id="httpClient">
         <class>com.robo4j.socket.http.units.HttpClientDescriptorUnit</class>
-        <config name="com.robo4j.root">
-            <value name="address" type="String">192.168.0.42</value>
-            <value name="port" type="int">8037</value>
-            <value name="targetUnits" type="String">[{"imageProcessor":["POST"]}]</value>
-        </config>
     </roboUnit>
     <roboUnit id="imageDescriptor">
         <class>com.robo4j.socket.http.units.ImageDescriptorUnit</class>
         <config name="com.robo4j.root">
             <value name="target" type="String">httpClient</value>
             <value name="host" type="String">192.168.0.42</value>
-            <value name="hostPort" type="String">8037</value>
-            <value name="remoteUnits" type="String">[{"imageProcessor":["POST"]}]</value>
+            <value name="port" type="int">8037</value>
+            <value name="remoteUnits" type="String">[{"/units/imageProcessor":["POST"]}]</value>
         </config>
     </roboUnit>
     <roboUnit id="camera">
