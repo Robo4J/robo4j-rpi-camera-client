@@ -71,8 +71,10 @@ public class CameraClientDeclarativeMain {
 		//@formatter:off
 		final RaspistillRequest activeRequest = new RaspistillRequest(true)
 				.put(RpiCameraProperty.WIDTH, "640")
-				.put(RpiCameraProperty.HEIGHT, "480").put(RpiCameraProperty.TIMEOUT, "2")
-				.put(RpiCameraProperty.TIMELAPSE, "100").put(RpiCameraProperty.ENCODING, "jpg")
+				.put(RpiCameraProperty.HEIGHT, "480")
+                .put(RpiCameraProperty.TIMEOUT, "2")
+				.put(RpiCameraProperty.TIMELAPSE, "100")
+                .put(RpiCameraProperty.ENCODING, "jpg")
 				.put(RpiCameraProperty.NOPREVIEW, "")
 				.put(RpiCameraProperty.OUTPUT, "-");
 		//@formatter:on
