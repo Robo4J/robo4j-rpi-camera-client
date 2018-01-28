@@ -23,11 +23,19 @@
             <value name="port" type="int">8037</value>
         </config>
     </roboUnit>
-    <roboUnit id="imageDescriptor">
-        <class>com.robo4j.units.rpi.http.camera.ImageDecoratorUnit</class>
+    <roboUnit id="imageCodec">
+        <class>com.robo4j.socket.http.units.HttpClientCodecUnit</class>
         <config name="com.robo4j.root">
             <value name="target" type="String">httpClient</value>
-            <value name="pathsConfig" type="String">[{"roboUnit":"imageProcessor","method":"POST"}]</value>
+            <value name="packages" type="String">com.robo4j.socket.http.codec</value>
+            <value name="unitPathsConfig" type="String">[{"roboUnit":"imageProcessor","method":"POST"}]</value>
+        </config>
+    </roboUnit>
+    <roboUnit id="imageDecorator">
+        <class>com.robo4j.units.rpi.http.camera.ImageDecoratorUnit</class>
+        <config name="com.robo4j.root">
+            <value name="target" type="String">imageCodec</value>
+            <value name="httpTarget" type="String">imageProcessor</value>
         </config>
     </roboUnit>
     <roboUnit id="cameraConfig">
@@ -39,7 +47,7 @@
     <roboUnit id="camera">
         <class>com.robo4j.units.rpi.camera.RaspistillUnit</class>
         <config name="com.robo4j.root">
-            <value name="target" type="String">imageDescriptor</value>
+            <value name="target" type="String">imageDecorator</value>
         </config>
     </roboUnit>
     <roboUnit id="httpServer">
@@ -47,7 +55,7 @@
         <config name="com.robo4j.root">
             <value name="port" type="int">8035</value>
             <value name="packages" type="String">com.robo4j.socket.http.codec</value>
-            <value name="pathsConfig" type="String">[{"roboUnit":"cameraConfigurationProcessor","method":"POST"},{"roboUnit":"cameraConfig","method":"POST"}]</value>
+            <value name="unitPathsConfig" type="String">[{"roboUnit":"cameraConfigurationProcessor","method":"POST"},{"roboUnit":"cameraConfig","method":"POST"}]</value>
         </config>
     </roboUnit>
 </robo4j>
