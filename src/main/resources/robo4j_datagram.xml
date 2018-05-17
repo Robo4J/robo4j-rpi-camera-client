@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright (c) 2014, 2017, Marcus Hirt, Miroslav Wengner
+  ~ Copyright (c) 2014, 2018, Marcus Hirt, Miroslav Wengner
   ~
   ~ Robo4J is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -16,27 +16,27 @@
   -->
 
 <robo4j>
-    <roboUnit id="httpClient">
-        <class>com.robo4j.socket.http.units.HttpClientUnit</class>
+    <roboUnit id="datagramClient">
+        <class>com.robo4j.socket.http.units.DatagramClientUnit</class>
         <config name="com.robo4j.root">
             <value name="host" type="String">192.168.0.42</value>
-            <value name="port" type="int">8037</value>
+            <value name="port" type="int">9011</value>
+            <value name="unitPathsConfig" type="String">[{"roboUnit":"imageProcessor","method":"POST"}]</value>
+            <value name="packages" type="String">com.robo4j.socket.http.codec</value>
         </config>
     </roboUnit>
-    <roboUnit id="imageCodec">
-        <class>com.robo4j.socket.http.units.HttpClientCodecUnit</class>
+    <roboUnit id="imageDatagramCodec">
+        <class>com.robo4j.socket.http.units.DatagramClientCodecUnit</class>
         <config name="com.robo4j.root">
-            <value name="target" type="String">httpClient</value>
+            <value name="target" type="String">datagramClient</value>
             <value name="packages" type="String">com.robo4j.socket.http.codec</value>
-            <value name="unitPathsConfig" type="String">
-                [{"roboUnit":"imageProcessor","method":"POST"}]
-            </value>
+            <value name="unitPathsConfig" type="String">[{"roboUnit":"imageProcessor","method":"POST"}]</value>
         </config>
     </roboUnit>
     <roboUnit id="imageDecorator">
         <class>com.robo4j.units.rpi.http.camera.ImageDecoratorUnit</class>
         <config name="com.robo4j.root">
-            <value name="target" type="String">imageCodec</value>
+            <value name="target" type="String">imageDatagramCodec</value>
             <value name="httpTarget" type="String">imageProcessor</value>
         </config>
     </roboUnit>
@@ -57,10 +57,7 @@
         <config name="com.robo4j.root">
             <value name="port" type="int">8035</value>
             <value name="packages" type="String">com.robo4j.socket.http.codec</value>
-            <value name="unitPathsConfig" type="String">[{"roboUnit":"cameraConfigurationProcessor","method":"POST"},
-                {"roboUnit":"cameraConfigurationProcessor","method":"GET"},{"roboUnit":"cameraConfig","method":"POST"},
-                {"roboUnit":"cameraConfig","method":"GET"}]
-            </value>
+            <value name="unitPathsConfig" type="String">[{"roboUnit":"cameraConfig","method":"POST"}]</value>
         </config>
     </roboUnit>
 </robo4j>
